@@ -15,6 +15,8 @@ public class OwfsConnectionConfig {
 
 	private int connectionTimeout = 4000; // default to 4s timeout
 
+	private int alarmingInterval = 50;
+
 	public OwfsConnectionConfig(String hostName, int portNumber) {
 		this.hostName = hostName;
 		this.portNumber = portNumber;
@@ -43,6 +45,14 @@ public class OwfsConnectionConfig {
 	 */
 	public void setTimeout(int timeout) {
 		connectionTimeout = timeout;
+	}
+
+	public int getAlarmingInterval() {
+		return alarmingInterval;
+	}
+
+	public void setAlarmingInterval(int alarmingInterval) {
+		this.alarmingInterval = alarmingInterval;
 	}
 
 	/**

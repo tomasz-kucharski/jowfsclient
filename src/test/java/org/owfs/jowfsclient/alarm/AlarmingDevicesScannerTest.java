@@ -12,7 +12,7 @@ import org.owfs.jowfsclient.TestNGGroups;
 import org.testng.annotations.Test;
 
 /**
- * @author Tomasz Kucharski <tomasz.kucharski@decerto.pl>
+ * @author Tom Kucharski
  * @since 15.10.13 22:07
  */
 @Test(groups = TestNGGroups.UNIT)
@@ -23,6 +23,7 @@ public class AlarmingDevicesScannerTest {
 		AlarmingDevicesReader mock = mock(AlarmingDevicesReader.class);
 		when(mock.isWorthToWork()).thenReturn(true);
 		AlarmingDevicesScanner alarmingDevicesScanner = new AlarmingDevicesScanner(mock);
+		alarmingDevicesScanner.setPeriodInterval(50);
 		AlarmingDeviceListener listenerMock = mock(AlarmingDeviceListener.class);
 
 		//when

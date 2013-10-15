@@ -15,28 +15,26 @@ public class AlarmingDevicesScanner {
 
 	private static final int INITIAL_DELAY = 1;
 	private static final int THREAD_POOL_SIZE = 1;
-	private static final int PERIOD = 50;
 
 	private AlarmingDevicesReader reader;
 
-	private int period;
+	private int periodInterval;
 
 	private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
 
 	public AlarmingDevicesScanner(AlarmingDevicesReader reader) {
-		this(reader, PERIOD);
+		this.reader = reader;
 	}
 
-	public AlarmingDevicesScanner(AlarmingDevicesReader reader, int period) {
-		this.reader = reader;
-		this.period = period;
+	public void setPeriodInterval(int periodInterval) {
+		this.periodInterval = periodInterval;
 	}
 
 	public void init() {
 		log.debug("AlarmingDeviceScanner initialization");
 		scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(THREAD_POOL_SIZE);
 		scheduledThreadPoolExecutor.setMaximumPoolSize(THREAD_POOL_SIZE);
-		scheduledThreadPoolExecutor.scheduleAtFixedRate(reader, INITIAL_DELAY, period, TimeUnit.MILLISECONDS);
+		scheduledThreadPoolExecutor.scheduleAtFixedRate(reader, INITIAL_DELAY, periodInterval, TimeUnit.MILLISECONDS);
 	}
 
 	public void addAlarmingDeviceHandler(AlarmingDeviceListener commander) throws IOException, OwfsException {

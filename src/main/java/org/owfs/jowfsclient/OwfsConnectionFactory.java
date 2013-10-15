@@ -7,6 +7,10 @@
  *******************************************************************************/
 package org.owfs.jowfsclient;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import org.owfs.jowfsclient.alarm.AlarmingDevicesReader;
 import org.owfs.jowfsclient.alarm.AlarmingDevicesScanner;
 import org.owfs.jowfsclient.internal.OwfsConnectionImpl;
@@ -18,61 +22,39 @@ import org.owfs.jowfsclient.internal.regularfs.OwfsConnectionRegularFs;
  * Here's an example of how {@code OwfsConnectionFactory} and {@link OwfsConnection} can
  * be used:
  * <pre>
- * OwfsConnection client = OwfsConnectionFactory.newOwfsClient(&quot;127.0.0.1&quot;, 3001, true);
- *
- * client.setPersistence(OwPersistence.OWNET_PERSISTENCE_ON);
- * client.setTemperatureScale(OwTemperatureScale.OWNET_TS_CELSIUS);
- * client.setBusReturn(OwBusReturn.OWNET_BUSRETURN_ON);
- * try {
- * 	List&lt;String&gt; dirs = client.listDirectoryAll(&quot;/&quot;);
- * 	for (String d : dirs) {
- * 		log.info(d);
- *     }
- * } catch (OwfsException e) {
- * 	// Handle OwfsException
- * } catch (IOException e) {
- * 	// Handle IOException
- * }
+ *  OwfsConnectionFactory owfsConnectorFactory = new OwfsConnectionFactory(hostname, port);
+ *  try {
+ *      OwfsConnection connection = owfsConnectorFactory.createNewConnection();
+ *      connection.write(deviceName + "/" + devicePropertyName, dynamicValue);
+ *  } catch (Exception e) {
+ *      handleException(e);
+ *  }
  * </pre>
  *
  * @author Patrik Akerfeldt
+ * @author Tom Kucharski
  */
 
 public class OwfsConnectionFactory {
+
+	private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
 	private OwfsConnectionConfig connectionConfig;
 
 	private AlarmingDevicesScanner alarmingScanner;
 
+	/**
+	 * Creates factory with default configuration
+	 *
+	 * @param hostName   hostname for owserver
+	 * @param portNumber portname for owserver, usually 4304
+	 */
 	public OwfsConnectionFactory(String hostName, int portNumber) {
 		connectionConfig = new OwfsConnectionConfig(hostName, portNumber);
 		connectionConfig.setDeviceDisplayFormat(Enums.OwDeviceDisplayFormat.F_DOT_I);
 		connectionConfig.setTemperatureScale(Enums.OwTemperatureScale.CELSIUS);
 		connectionConfig.setPersistence(Enums.OwPersistence.ON);
 		connectionConfig.setBusReturn(Enums.OwBusReturn.ON);
-	}
-
-	public OwfsConnectionConfig getConnectionConfig() {
-		return connectionConfig;
-	}
-
-	public void setConnectionConfig(OwfsConnectionConfig connectionConfig) {
-		this.connectionConfig = connectionConfig;
-	}
-
-	public void setAlarmingScanner(AlarmingDevicesScanner alarmingScanner) {
-		this.alarmingScanner = alarmingScanner;
-	}
-
-	public AlarmingDevicesScanner getAlarmingScanner() {
-		if (alarmingScanner == null) {
-			alarmingScanner = new AlarmingDevicesScanner(new AlarmingDevicesReader(this));
-		}
-		return alarmingScanner;
-	}
-
-	public OwfsConnection createNewConnection() {
-		return new OwfsConnectionImpl(connectionConfig);
 	}
 
 	/**
@@ -102,5 +84,49 @@ public class OwfsConnectionFactory {
 	 */
 	public static OwfsConnection newOwfsClient(String rootPath) {
 		return new OwfsConnectionRegularFs(rootPath);
+	}
+
+	/**
+	 * Creates new connection based on configuration provided
+	 *
+	 * @return
+	 */
+	public OwfsConnection createNewConnection() {
+		return new OwfsConnectionImpl(connectionConfig);
+	}
+
+	public OwfsConnectionConfig getConnectionConfig() {
+		return connectionConfig;
+	}
+
+	public void setConnectionConfig(OwfsConnectionConfig connectionConfig) {
+		this.connectionConfig = connectionConfig;
+		if (alarmingScanner != null) {
+			alarmingScanner.setPeriodInterval(connectionConfig.getAlarmingInterval());
+		}
+	}
+
+	/**
+	 * Returns alarming scanner related to {@link OwfsConnectionFactory}. If not
+	 *
+	 * @return alarming scanner
+	 */
+	public AlarmingDevicesScanner getAlarmingScanner() {
+		if (alarmingScanner == null) {
+			alarmingScanner = new AlarmingDevicesScanner(new AlarmingDevicesReader(this));
+			alarmingScanner.setPeriodInterval(connectionConfig.getAlarmingInterval());
+		}
+		return alarmingScanner;
+	}
+
+	public void addPeriodicJob(PeriodicJob job) {
+		job.setOwfsConnectionFactory(this);
+		ScheduledFuture scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(
+				job,
+				0,
+				job.getIntervalInMiliseconds(),
+				TimeUnit.MILLISECONDS
+		);
+		job.setScheduledFuture(scheduledFuture);
 	}
 }
