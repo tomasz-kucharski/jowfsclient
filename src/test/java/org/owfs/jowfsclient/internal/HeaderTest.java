@@ -17,35 +17,27 @@ public class HeaderTest {
 
 	Header header1 = new Header(h1_version, h1_paylen, h1_function, h1_flags, h1_datalen, h1_offset);
 
-	@Test
 	public void testGetVersion() {
 		assertTrue(h1_version == header1.getVersion());
 	}
 
-	@Test
 	public void testGetPayloadLength() {
 		assertTrue(h1_paylen == header1.getPayloadLength());
 	}
 
-	@Test
 	public void testGetFlags() {
 		assertTrue(h1_flags.equals(header1.getFlags()));
 	}
 
-	@Test
 	public void testGetDataLength() {
 		assertTrue(h1_datalen == header1.getDataLength());
 	}
 
-	@Test
 	public void testGetOffset() {
 		assertTrue(h1_offset == header1.getOffset());
 	}
 
-	@Test
 	public void testGetFunction() {
 		assertTrue(h1_function == header1.getFunction());
 	}
-
-
 }

@@ -1,4 +1,4 @@
-package org.owfs.jowfsclient.alarm;
+package org.owfs.jowfsclient.util;
 
 /**
  * @author Tom Kucharski

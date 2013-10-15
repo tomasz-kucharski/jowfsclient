@@ -14,8 +14,8 @@ public class AlarmingDevicesScanner {
 	private static final Logger log = LoggerFactory.getLogger(AlarmingDevicesScanner.class);
 
 	private static final int INITIAL_DELAY = 1;
+	private static final int THREAD_POOL_SIZE = 1;
 	private static final int PERIOD = 50;
-	public static final int THREAD_POOL_SIZE = 1;
 
 	private AlarmingDevicesReader reader;
 

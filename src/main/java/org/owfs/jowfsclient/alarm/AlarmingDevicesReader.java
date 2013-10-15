@@ -7,6 +7,7 @@ import java.util.Map;
 import org.owfs.jowfsclient.OwfsConnection;
 import org.owfs.jowfsclient.OwfsConnectionFactory;
 import org.owfs.jowfsclient.OwfsException;
+import org.owfs.jowfsclient.util.OWFSUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

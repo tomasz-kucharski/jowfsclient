@@ -1,6 +1,7 @@
-package org.owfs.jowfsclient;
+package org.owfs.jowfsclient.util;
 
-import org.owfs.jowfsclient.alarm.OWFSUtils;
+import org.owfs.jowfsclient.TestNGGroups;
+import org.owfs.jowfsclient.util.OWFSUtils;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

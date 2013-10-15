@@ -36,7 +36,7 @@ public abstract class SwitchAlarmingDeviceListener implements AlarmingDeviceList
 
 	@Override
 	public void onInitialize(OwfsConnection client) throws IOException, OwfsException {
-		setAlarmMaskTrigger(client);
+		updateAlarmMaskTrigger(client);
 		clearDeviceJustPoweredFlag(client);
 		clearDeviceLatchAllStatus(client);
 	}
@@ -76,7 +76,7 @@ public abstract class SwitchAlarmingDeviceListener implements AlarmingDeviceList
 		client.write(deviceName + COMMAND_POWER_ON_RESET, COMMAND_POWER_ON_RESET_CLEARING_VALUE);
 	}
 
-	private void setAlarmMaskTrigger(OwfsConnection client) throws IOException, OwfsException {
+	private void updateAlarmMaskTrigger(OwfsConnection client) throws IOException, OwfsException {
 		client.write(deviceName + COMMAND_SET_ALARM, alarmingMask);
 	}
 
