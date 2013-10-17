@@ -65,7 +65,7 @@ public class OwfsConnectionFactoryTest {
 		//given
 		PeriodicJob periodicJob = spy(new PeriodicJob(100) {
 			@Override
-			public void run() {
+			public void run(OwfsConnection connection) {
 			}
 		});
 

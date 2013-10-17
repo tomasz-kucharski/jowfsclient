@@ -42,7 +42,11 @@ public abstract class PeriodicJob implements Runnable {
 		return intervalInMiliseconds;
 	}
 
-	public abstract void run();
+	public void run() {
+		run(getConnection());
+	}
+
+	public abstract void run(OwfsConnection connection);
 
 	public void cancel() {
 		scheduledFuture.cancel(false);
