@@ -103,6 +103,7 @@ public class OwfsConnectionFactory {
 		this.connectionConfig = connectionConfig;
 		if (alarmingScanner != null) {
 			alarmingScanner.setPeriodInterval(connectionConfig.getAlarmingInterval());
+			alarmingScanner.setInitialDelay(connectionConfig.getAlarmingInitialDelay());
 		}
 	}
 
@@ -115,6 +116,7 @@ public class OwfsConnectionFactory {
 		if (alarmingScanner == null) {
 			alarmingScanner = new AlarmingDevicesScanner(new AlarmingDevicesReader(this));
 			alarmingScanner.setPeriodInterval(connectionConfig.getAlarmingInterval());
+			alarmingScanner.setInitialDelay(connectionConfig.getAlarmingInitialDelay());
 		}
 		return alarmingScanner;
 	}

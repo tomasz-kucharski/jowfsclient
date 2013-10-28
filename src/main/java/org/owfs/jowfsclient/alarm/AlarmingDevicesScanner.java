@@ -13,14 +13,13 @@ import org.slf4j.LoggerFactory;
 public class AlarmingDevicesScanner {
 	private static final Logger log = LoggerFactory.getLogger(AlarmingDevicesScanner.class);
 
-	private static final int INITIAL_DELAY = 1000;
 	private static final int THREAD_POOL_SIZE = 1;
 
 	private AlarmingDevicesReader reader;
 
 	private int periodInterval;
 
-	private int initialDelay = INITIAL_DELAY;
+	private int initialDelay;
 
 	private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
 

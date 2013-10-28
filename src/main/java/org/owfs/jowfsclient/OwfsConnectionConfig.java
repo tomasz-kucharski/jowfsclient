@@ -17,6 +17,8 @@ public class OwfsConnectionConfig {
 
 	private int alarmingInterval = 50;
 
+	private int alarmingInitialDelay = 1000;
+
 	public OwfsConnectionConfig(String hostName, int portNumber) {
 		this.hostName = hostName;
 		this.portNumber = portNumber;
@@ -53,6 +55,14 @@ public class OwfsConnectionConfig {
 
 	public void setAlarmingInterval(int alarmingInterval) {
 		this.alarmingInterval = alarmingInterval;
+	}
+
+	public int getAlarmingInitialDelay() {
+		return alarmingInitialDelay;
+	}
+
+	public void setAlarmingInitialDelay(int alarmingInitialDelay) {
+		this.alarmingInitialDelay = alarmingInitialDelay;
 	}
 
 	/**

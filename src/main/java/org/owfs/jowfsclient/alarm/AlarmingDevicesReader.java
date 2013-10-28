@@ -1,7 +1,7 @@
 package org.owfs.jowfsclient.alarm;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import org.owfs.jowfsclient.OwfsConnection;
@@ -17,7 +17,7 @@ public class AlarmingDevicesReader implements Runnable {
 	private OwfsConnectionFactory factory;
 	private OwfsConnection client;
 
-	private Map<String, AlarmingDeviceListener> alarmingDevices = new HashMap<String, AlarmingDeviceListener>();
+	private Map<String, AlarmingDeviceListener> alarmingDevices = new Hashtable<String, AlarmingDeviceListener>();
 
 	public AlarmingDevicesReader(OwfsConnectionFactory factory) {
 		this.factory = factory;
@@ -28,8 +28,8 @@ public class AlarmingDevicesReader implements Runnable {
 		tryToReadAlarmingDirectory();
 	}
 
-	public synchronized void addAlarmingDeviceHandler(AlarmingDeviceListener commander) throws IOException, OwfsException {
-		commander.onInitialize(getClient());
+	public void addAlarmingDeviceHandler(AlarmingDeviceListener commander) throws IOException, OwfsException {
+		commander.onInitialize(factory.createNewConnection());
 		alarmingDevices.put(commander.getDeviceName(), commander);
 	}
 
@@ -37,7 +37,7 @@ public class AlarmingDevicesReader implements Runnable {
 		return alarmingDevices.containsKey(deviceName);
 	}
 
-	public synchronized void removeAlarmingDeviceHandler(String deviceName) {
+	public void removeAlarmingDeviceHandler(String deviceName) {
 		alarmingDevices.remove(deviceName);
 	}
 
