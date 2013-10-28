@@ -13,12 +13,14 @@ import org.slf4j.LoggerFactory;
 public class AlarmingDevicesScanner {
 	private static final Logger log = LoggerFactory.getLogger(AlarmingDevicesScanner.class);
 
-	private static final int INITIAL_DELAY = 1;
+	private static final int INITIAL_DELAY = 1000;
 	private static final int THREAD_POOL_SIZE = 1;
 
 	private AlarmingDevicesReader reader;
 
 	private int periodInterval;
+
+	private int initialDelay = INITIAL_DELAY;
 
 	private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
 
@@ -30,11 +32,15 @@ public class AlarmingDevicesScanner {
 		this.periodInterval = periodInterval;
 	}
 
+	public void setInitialDelay(int initialDelay) {
+		this.initialDelay = initialDelay;
+	}
+
 	public void init() {
 		log.debug("AlarmingDeviceScanner initialization");
 		scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(THREAD_POOL_SIZE);
 		scheduledThreadPoolExecutor.setMaximumPoolSize(THREAD_POOL_SIZE);
-		scheduledThreadPoolExecutor.scheduleAtFixedRate(reader, INITIAL_DELAY, periodInterval, TimeUnit.MILLISECONDS);
+		scheduledThreadPoolExecutor.scheduleAtFixedRate(reader, initialDelay, periodInterval, TimeUnit.MILLISECONDS);
 	}
 
 	public void addAlarmingDeviceHandler(AlarmingDeviceListener commander) throws IOException, OwfsException {

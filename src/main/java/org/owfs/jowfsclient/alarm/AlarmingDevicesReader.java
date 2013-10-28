@@ -28,7 +28,7 @@ public class AlarmingDevicesReader implements Runnable {
 		tryToReadAlarmingDirectory();
 	}
 
-	public void addAlarmingDeviceHandler(AlarmingDeviceListener commander) throws IOException, OwfsException {
+	public synchronized void addAlarmingDeviceHandler(AlarmingDeviceListener commander) throws IOException, OwfsException {
 		commander.onInitialize(getClient());
 		alarmingDevices.put(commander.getDeviceName(), commander);
 	}
@@ -37,7 +37,7 @@ public class AlarmingDevicesReader implements Runnable {
 		return alarmingDevices.containsKey(deviceName);
 	}
 
-	public void removeAlarmingDeviceHandler(String deviceName) {
+	public synchronized void removeAlarmingDeviceHandler(String deviceName) {
 		alarmingDevices.remove(deviceName);
 	}
 
@@ -46,7 +46,7 @@ public class AlarmingDevicesReader implements Runnable {
 		return client;
 	}
 
-	public boolean isWorthToWork() {
+	public synchronized boolean isWorthToWork() {
 		return alarmingDevices.size() > 0;
 	}
 
