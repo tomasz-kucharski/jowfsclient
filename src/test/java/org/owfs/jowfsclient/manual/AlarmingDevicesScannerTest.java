@@ -6,7 +6,6 @@ import java.io.IOException;
 import org.owfs.jowfsclient.OwfsConnectionFactory;
 import org.owfs.jowfsclient.OwfsException;
 import org.owfs.jowfsclient.TestNGGroups;
-import org.owfs.jowfsclient.alarm.AlarmingDevicesReader;
 import org.owfs.jowfsclient.alarm.AlarmingDevicesScanner;
 import org.owfs.jowfsclient.device.SwitchAlarmingDeviceEvent;
 import org.owfs.jowfsclient.device.SwitchAlarmingDeviceListener;
@@ -35,7 +34,7 @@ public class AlarmingDevicesScannerTest {
 	public void shouldReceiveAtLeastOneMessage(String hostName, int port, String inputDevice) throws InterruptedException, IOException, OwfsException {
 
 		OwfsConnectionFactory factory = new OwfsConnectionFactory(hostName, port);
-		AlarmingDevicesReader alarmingDevicesReader = new AlarmingDevicesReader(factory);
+		AlarmingDevicesScanner alarmingScanner = factory.getAlarmingScanner();
 		SwitchAlarmingDeviceListener ds2408AlarmingDeviceHandler = new SwitchAlarmingDeviceListener(
 				inputDevice,
 				SwitchAlarmingDeviceListener.ALARMING_MASK_8_SWITCHES
@@ -46,12 +45,10 @@ public class AlarmingDevicesScannerTest {
 				cancelTestSuccesfully();
 			}
 		};
-		alarmingDevicesReader.addAlarmingDeviceHandler(ds2408AlarmingDeviceHandler);
-		AlarmingDevicesScanner alarmingDevicesScanner = new AlarmingDevicesScanner(alarmingDevicesReader);
+		alarmingScanner.addAlarmingDeviceHandler(ds2408AlarmingDeviceHandler);
 
-		alarmingDevicesScanner.init();
 		doManualAction(inputDevice);
-		alarmingDevicesScanner.shutdown();
+		alarmingScanner.removeAlarmingDeviceHandler(inputDevice);
 		assertTrue(messageReceived);
 	}
 
